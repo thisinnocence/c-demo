@@ -52,7 +52,7 @@ void ve_erase(struct vector *ve, void *item)
     }
 }
 
-// return true if items is same with items
+// return true if item1 equals item2
 typedef bool (ve_comp_func)(const char *item1, const char *item2);
 
 void *ve_find(struct vector *ve, const void *item, ve_comp_func comp)

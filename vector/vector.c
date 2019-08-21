@@ -24,8 +24,8 @@ void ve_push_back(struct vector *ve, const void *item)
         free(ve->head);
         ve->head = new_array;
     }
-    void *pos = (char *) ve->head + ve->item_num * ve->item_size;
-    memcpy(pos, item, ve->item_size);
+    void *last = (char *) ve->head + ve->item_num * ve->item_size;
+    memcpy(last , item, ve->item_size);
     ve->item_num++;
 }
 
@@ -47,17 +47,18 @@ void ve_erase(struct vector *ve, void *item)
     }
 
     ve->item_num--;
-    if (last > (char*)item) {
+    if ((char*)item < last ) {
         memmove(item, (char *) item + ve->item_size, last - (char *) item);
     }
 }
 
+// return true if items is same with items
 typedef bool (ve_comp_func)(const char *item1, const char *item2);
 
 void *ve_find(struct vector *ve, const void *item, ve_comp_func comp)
 {
-    size_t i = 0;
-    for (; i < ve->item_num; i++) {
+    unsigned int i;
+    for (i = 0; i < ve->item_num; i++) {
         char *cur = (char*)ve->head + i * ve->item_size;
         if (comp((char*)item, cur)) {
             return cur;
@@ -68,8 +69,12 @@ void *ve_find(struct vector *ve, const void *item, ve_comp_func comp)
 
 void ve_init(struct vector *ve, size_t item_size)
 {
-    ve->item_max_num = 5;
+    ve->item_max_num = 10;
     ve->head = malloc(ve->item_max_num * item_size);
+    if (ve->head == NULL) {
+        printf("malloc failed\n");
+        return;
+    }
     ve->item_size = item_size;
     ve->item_num = 0;
 }
@@ -82,6 +87,11 @@ void ve_clear(struct vector *ve)
 
 //--------- test case ------------------
 // an int vector
+bool comp(const char *item1, const char *item2)
+{
+    return *(int*)item1 == *(int*)item2;
+}
+
 void show_re(struct vector *ve)
 {
     unsigned int i;
@@ -89,11 +99,7 @@ void show_re(struct vector *ve)
     for (i = 0; i < ve->item_num; i++) {
         printf("%d ", data[i]);
     }
-}
-
-bool comp(const char *item1, const char *item2)
-{
-    return *(int*)item1 == *(int*)item2;
+    printf("\n");
 }
 
 int main()
@@ -101,13 +107,11 @@ int main()
     int n = 0;
     struct vector ve;
     ve_init(&ve, sizeof(int));
-    ve.head = malloc(ve.item_max_num * ve.item_size);
 
     while (n != -1) {
         scanf("%d", &n);
         ve_push_back(&ve, &n);
         show_re(&ve);
-        printf("\n");
     }
 
     while (n != -2) {
@@ -115,8 +119,8 @@ int main()
         void *item = ve_find(&ve, &n, comp);
         ve_erase(&ve, item);
         show_re(&ve);
-        printf("\n");
     }
+
     ve_clear(&ve);
     return 0;
 }

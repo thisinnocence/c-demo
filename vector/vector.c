@@ -10,7 +10,7 @@ struct vector {
     void *head;
 };
 
-void ve_push_back(struct vector *ve, void *item)
+void ve_push_back(struct vector *ve, const void *item)
 {
     if (ve->item_num == ve->item_max_num) {
         unsigned int old_len = ve->item_size * ve->item_num;
@@ -54,7 +54,7 @@ void ve_erase(struct vector *ve, void *item)
 
 typedef bool (ve_comp_func)(const char *item1, const char *item2);
 
-void *ve_find(struct vector *ve, void *item, ve_comp_func comp)
+void *ve_find(struct vector *ve, const void *item, ve_comp_func comp)
 {
     size_t i = 0;
     for (; i < ve->item_num; i++) {

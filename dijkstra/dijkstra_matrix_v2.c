@@ -72,6 +72,12 @@ void Dijkstra(const struct GraphMatrix *graphMatrix, int start, int *distance) {
     }
 }
 
+int GetShortDistance(const struct GraphMatrix *graph, int src, int dst) {
+    int distances[graph->vertexNum];
+    Dijkstra(graph, src, distances);
+    return distances[dst];
+}
+
 int main() {
     int N = 65536;
     int graph[9][9] = {
@@ -109,6 +115,9 @@ int main() {
         printf("%d ", distance[i]);
     } // 0 1 4 7 5 8 10 12 16
     printf("\n");
+
+    int dis = GetShortDistance(&graphMatrix, 0, 3);
+    printf("0-->3 distance %d\n", dis);
     
     // free map
     FreeGraph(&graphMatrix);

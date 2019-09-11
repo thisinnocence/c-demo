@@ -2,6 +2,7 @@
 #include <string.h>
 
 // 15min, just do it quick, quick coding
+// FSM mechod, kind of
 
 void find_sub(char *str, char *substr) {
     char out[10000] = {0};

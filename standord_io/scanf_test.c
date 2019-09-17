@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+// http://www.cplusplus.com/reference/cstdio/scanf
 int main() {
     char tmp[100] = {0};
     char tmp1[100] = {0};

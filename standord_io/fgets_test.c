@@ -25,6 +25,6 @@ int main() {
 }
 
 /*
-root@wuming-ubuntu:/media/sf_VMshare/test# echo "hello hi hi" | ./a.out
+root@ubuntu:/media/sf_VMshare/test# echo "hello hi hi" | ./a.out
 [hell][o hi][ hi]
 */

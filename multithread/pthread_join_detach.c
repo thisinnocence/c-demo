@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
         //solution2: use join
         //void *status = NULL;
-        //ret = pthread_join(tid, &status);
+        //ret = pthread_join(tid, &status); // Note: this is a block call.
         //CHECK_RET(pthred_join, ret);
     }
 

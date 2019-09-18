@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+// fgets: get string from file pointer.
+//
 // http://www.cplusplus.com/reference/cstdio/fgets
 // Reads characters from stream and stores them as a C string into str until (num-1) characters
 //   have been read or either a newline or the end-of-file is reached, whichever happens first.

@@ -3,23 +3,34 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-int main() {
-    uint32_t ip;
-    char *val = (char*)&ip;
-    // clang-tidy suggest: use strtoul
-    sscanf("192.168.1.1", "%hhu.%hhu.%hhu.%hhu", &val[3], &val[2], &val[1], &val[0]);
-    printf("%u\n", ip);
+uint32_t str2ip_1(const char *ip) {
+    uint32_t re;
+    char *val = (char *) &re;
+    sscanf(ip, "%hhu.%hhu.%hhu.%hhu", &val[3], &val[2], &val[1], &val[0]);
+    return re;
+}
 
-    uint32_t ip2;
-    char *val2 = (char*)&ip2;
-
-    char *next = "192.168.1.1";
-    int i = 3;
+uint32_t str2ip_2(const char *ip) {
+    uint32_t re;
+    uint8_t *val = (uint8_t*)&re + 3; // byte-order
+    char *next = (char *) ip;
     while (next && *next) {
-        val2[i--] = strtoul(next, &next, 0);
-        while(!isdigit(*next) && *next) next++;
+        *val-- = (uint8_t)strtoul(next, &next, 0);
+        while (!isdigit(*next) && *next) next++;
     }
-    printf("%u\n", ip2);
+    return re;
+}
+
+int main() {
+    const char *ip = "192.168.1.1";
+    uint32_t val;
+
+    val = str2ip_1(ip);
+    printf("%u\n", val);
+
+    val = str2ip_2(ip);
+    printf("%u\n", val);
+
     return 0;
 }
 
@@ -27,3 +38,4 @@ int main() {
 3232235777
 3232235777
 */
+

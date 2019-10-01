@@ -1,7 +1,6 @@
 #include <stdio.h>
 
-// [begin, end) 前闭后开，索引范围是[begin, end - 1]
-// 冒泡, 稳定排序
+// [begin, end), stable
 void bubble_sort(int data[], int begin, int end)
 {
     int i, j, tmp;
@@ -16,8 +15,7 @@ void bubble_sort(int data[], int begin, int end)
     }
 }
 
-// [begin, end) 前闭后开，索引范围是[begin, end - 1]
-// 选择排序, 非稳定排序
+// [begin, end), unstable
 void select_sort(int data[], int begin, int end)
 {
     int i, j, tmp;
@@ -32,8 +30,7 @@ void select_sort(int data[], int begin, int end)
     }
 }
 
-// [begin, end) 前闭后开，索引范围是[begin, end - 1]
-// 快排, 分支递归思想, 非稳定排序
+// [begin, end), unstable
 void quick_sort(int data[], int begin, int end)
 {
     int i = begin, j = end - 1, tmp;

@@ -102,7 +102,7 @@ int main()
     for (int i = 0; i < 9; i ++) {
         gra[i] = (int*)&graph[i];
     }
-    bfs((int**)gra, 9, 9, N,0);
-    bfs((int**)gra, 9, 9, N,8);
+    bfs((int**)gra, 9, 9, N,0); // 0 1 2 3 4 5 6 7 8
+    bfs((int**)gra, 9, 9, N,8); // 8 6 7 3 4 5 1 2 0
     return 0;
 }

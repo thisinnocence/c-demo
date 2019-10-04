@@ -56,10 +56,10 @@ void init(struct queue *q)
     q->tail = 0;
 }
 
-void bfs(int **graph, int row, int col, int max_dis, int start)
+void bfs(int **graph, int vertex_num, int max_dis, int start)
 {
-    bool visited[row];
-    for (int i = 0; i < row; i++) {
+    bool visited[vertex_num];
+    for (int i = 0; i < vertex_num; i++) {
         visited[i] = false;
     }
 
@@ -72,7 +72,7 @@ void bfs(int **graph, int row, int col, int max_dis, int start)
             printf("%d ", cur);
         }
         visited[cur] = true;
-        for (int i = 0; i < row; i++) {
+        for (int i = 0; i < vertex_num; i++) {
             if (graph[cur][i] != max_dis && !visited[i]) {
                 push(&que, i);
             }
@@ -102,7 +102,7 @@ int main()
     for (int i = 0; i < 9; i ++) {
         gra[i] = (int*)&graph[i];
     }
-    bfs((int**)gra, 9, 9, N,0); // 0 1 2 3 4 5 6 7 8
-    bfs((int**)gra, 9, 9, N,8); // 8 6 7 3 4 5 1 2 0
+    bfs((int**)gra, 9, N,0); // 0 1 2 3 4 5 6 7 8
+    bfs((int**)gra, 9, N,8); // 8 6 7 3 4 5 1 2 0
     return 0;
 }

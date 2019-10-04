@@ -2,15 +2,16 @@
 #include <stdbool.h>
 #include <string.h>
 
-static bool visited[1024];
-void dfs(int **graph, int row, int col, int max_dis, int start)
+void dfs(int **graph, int vertex_num, bool *visited, int max_dis, int start)
 {
-    if (visited[start]) return;
+    if (visited[start])
+        return;
+
     printf("%d ", start);
     visited[start] = true;
-    for (int i = 0; i < row; i++) {
+    for (int i = 0; i < vertex_num; i++) {
         if (i != start && graph[start][i] != max_dis) {
-            dfs(graph, row, col, max_dis, i);
+            dfs(graph, vertex_num, visited, max_dis, i);
         }
     }
 }
@@ -35,10 +36,14 @@ int main()
     for (int i = 0; i < 9; i ++) {
         gra[i] = (int*)&graph[i];
     }
-    dfs((int**)gra, 9, 9, N,0); // 0 1 2 4 3 6 7 5 8
-    printf("\n");
+    bool visited[9];
+
     memset(visited, 0, sizeof(visited));
-    dfs((int**)gra, 9, 9, N,8); // 8 6 3 1 0 2 4 5 7
+    dfs((int**)gra, 9, visited, N,0); // 0 1 2 4 3 6 7 5 8
+    printf("\n");
+
+    memset(visited, 0, sizeof(visited));
+    dfs((int**)gra, 9, visited, N,8); // 8 6 3 1 0 2 4 5 7
     printf("\n");
     return 0;
 }

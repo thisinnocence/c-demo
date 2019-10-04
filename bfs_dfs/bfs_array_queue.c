@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 
 #define MAX_QUE_SIZE 1024
@@ -59,9 +60,7 @@ void init(struct queue *q)
 void bfs(int **graph, int vertex_num, int max_dis, int start)
 {
     bool visited[vertex_num];
-    for (int i = 0; i < vertex_num; i++) {
-        visited[i] = false;
-    }
+    memset(visited, false, sizeof(visited));
 
     struct queue que;
     init(&que);

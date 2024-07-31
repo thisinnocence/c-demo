@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -g -I../util
 LDFLAGS = -lrt
 
 TARGETS = server.out client.out

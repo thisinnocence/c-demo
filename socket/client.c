@@ -31,13 +31,14 @@ int main() {
 
     // Send message to server
     // send(sock, message, strlen(message), 0);
+    log("Message sent begin");
     write(sock, message, strlen(message));
-    printf("Message sent\n");
+    log("send finish, will call receive");
 
     // Receive response from server
     // recv(sock, buffer, BUFFER_SIZE, 0);
     read(sock, buffer, BUFFER_SIZE);
-    printf("Server: %s\n", buffer);
+    log("recv finish, Server: %s\n", buffer);
 
     // Clean up
     close(sock);

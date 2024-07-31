@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+#include "log.h"
+
 #define PORT 8080
 #define BUFFER_SIZE 1024
 

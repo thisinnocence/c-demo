@@ -1,13 +1,12 @@
 #include "comm.h"
 
-int main() {
-    int sock = 0;
+int make_conn()
+{
+    int fd = 0;
     struct sockaddr_in serv_addr;
-    char *message = "Hello from client";
-    char buffer[BUFFER_SIZE] = {0};
 
-    // Create socket
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    // Create socket fd
+    if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Socket creation error");
         return -1;
     }
@@ -19,30 +18,43 @@ int main() {
     // Convert IPv4 and IPv6 addresses from text to binary form
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
         perror("Invalid address / Address not supported");
-        close(sock);
+        close(fd);
         return -1;
     }
 
     // Connect to server
-    while (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    while (connect(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         printf("connecting to server...\n");
         sleep(2);
     }
+    return fd;
+}
+
+void msg_proc(int fd)
+{
+    char buffer[BUFFER_SIZE] = {0};
+    // Receive response from server
+    // recv(fd, buffer, BUFFER_SIZE, 0);
+    read(fd, buffer, BUFFER_SIZE);
+    log("recv finish, Server: %s\n", buffer);
+}
+
+int main()
+{
+    char *message = "Hello from client";
+    int fd = make_conn();
 
     // Send message to server
-    // send(sock, message, strlen(message), 0);
-    log("Message sent begin");
-    write(sock, message, strlen(message));
+    // send(fd, message, strlen(message), 0);
+    log("msg_send: %s", message);
+    write(fd, message, strlen(message));
     log("send finish, will call receive");
 
-    // Receive response from server
-    // recv(sock, buffer, BUFFER_SIZE, 0);
-    read(sock, buffer, BUFFER_SIZE);
-    log("recv finish, Server: %s\n", buffer);
+    // proc msg received
+    msg_proc(fd);
 
     // Clean up
-    close(sock);
-
+    close(fd);
     return 0;
 }
 

@@ -18,15 +18,15 @@ static inline void log_time()
     tm_info = localtime(&tv.tv_sec);
 
     strftime(buffer, 26, "[%H:%M:%S", tm_info);
-    printf("%s.%06d] ", buffer, microseconds);
+    printf("%s.%06d]", buffer, microseconds);
 }
 
 /* 格式：时间 模块 文件:行号 @@ 函数 日志信息 */
 #define log(fmt, ...) do { \
     if (LOG_SWITCH) { \
         log_time(); \
-        printf("module %s:%d @@ %s " fmt "\n", \
-                __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__); \
+        printf("[%s:%d]" fmt "\n", \
+                __FILE__, __LINE__, ##__VA_ARGS__); \
     } \
 } while (0)
 

@@ -1,3 +1,9 @@
+# auto-gen by chat-gpt
+#
+# `bear make` can generate compile_commands.json
+# is used for clangd-lsp for vim/vscode
+
+
 CC = gcc
 
 CFLAGS = -Wall -Wextra -g -I../util

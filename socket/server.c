@@ -1,11 +1,10 @@
 #include "comm.h"
 
-int main() {
-    int server_fd, new_socket;
+void make_conn(int *pserver_fd, int *pconn_fd)
+{
+    int server_fd, conn_fd;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    char buffer[BUFFER_SIZE] = {0};
-    const char *response = "Hello from server";
 
     // Create socket
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -33,24 +32,34 @@ int main() {
     }
 
     // Accept a connection
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
+    if ((conn_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
         perror("accept");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
+    *pserver_fd = server_fd;
+    *pconn_fd = conn_fd;
+}
+
+int main()
+{
+    int server_fd, conn_fd;
+    make_conn(&server_fd, &conn_fd);
+
+    char buffer[BUFFER_SIZE] = {0};
+    const char *response = "Hello from server";
     // Read data from client
-    read(new_socket, buffer, BUFFER_SIZE);
-    printf("Client: %s\n", buffer);
+    read(conn_fd, buffer, BUFFER_SIZE);
+    log("recv client req: %s", buffer);
 
     // Send response to client
-    send(new_socket, response, strlen(response), 0);
-    printf("Response sent\n");
+    send(conn_fd, response, strlen(response), 0);
+    log("response sent");
 
     // Clean up
-    close(new_socket);
+    close(conn_fd);
     close(server_fd);
-
     return 0;
 }
 

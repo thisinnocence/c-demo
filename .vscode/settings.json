@@ -1,5 +1,6 @@
 {
     "files.exclude": {
+        "**/*.d": true,
         "**/*.o": true,
         "**/*.out": true,
         "**/.cache": true

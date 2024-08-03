@@ -2,7 +2,7 @@
 
 int make_conn()
 {
-    int fd = 0;
+    int fd = 0, ret = 0;
     struct sockaddr_in serv_addr;
 
     // Create socket fd
@@ -23,10 +23,21 @@ int make_conn()
     }
 
     // Connect to server
-    while (connect(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        printf("connecting to server...\n");
-        sleep(2);
+CONN:
+    ret = connect(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    if (ret < 0) {
+        if (errno == ECONNREFUSED) {
+            static int retry_cnt = 0;
+            log("Connection refused: no server listening at the port %d, retry [%02d]...", PORT, ++retry_cnt);
+            sleep(1);
+            goto CONN;
+        } else {
+            perror("Connect error");
+            return -1;
+        }
     }
+
+    log("Connection OK");
     return fd;
 }
 
@@ -36,13 +47,17 @@ void msg_proc(int fd)
     // Receive response from server
     // recv(fd, buffer, BUFFER_SIZE, 0);
     read(fd, buffer, BUFFER_SIZE);
-    log("recv finish, Server: %s\n", buffer);
+    log("recv finish, Server: %s", buffer);
 }
 
 int main()
 {
     char *message = "Hello from client";
     int fd = make_conn();
+    if (fd < 0) {
+        log("connect error!");
+        exit(1);
+    }
 
     // Send message to server
     // send(fd, message, strlen(message), 0);

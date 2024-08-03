@@ -15,9 +15,17 @@ all: $(TARGETS)
 
 SRCS = server.c client.c
 OBJS = $(SRCS:.c=.o)
+DEPS = $(SRCS:.c=.d)
 
-%.o: %.c
+-include $(DEPS)
+
+%.o: %.c %.d
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.d: %.c
+	@set -e; \
+	$(CC) $(CFLAGS) -MM $< | \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 # Build server executable
 server.out: server.o
@@ -28,7 +36,6 @@ client.out: client.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 clean:
-	rm -f $(OBJS) $(TARGETS)
+	rm -f $(OBJS) $(TARGETS) $(DEPS)
 
 .PHONY: all clean
-

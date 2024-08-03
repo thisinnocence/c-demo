@@ -3,6 +3,7 @@
         "**/*.d": true,
         "**/*.o": true,
         "**/*.out": true,
-        "**/.cache": true
+        "**/.cache": true,
+        "**/compile_commands.json": true
     }
 }

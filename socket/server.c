@@ -14,11 +14,11 @@ void make_conn(int *pserver_fd, int *pconn_fd)
 
     // Configure server address
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_addr.s_addr = INADDR_ANY; // 本机所有IP地址都被监听
     address.sin_port = htons(PORT);
 
     // 设置 SO_REUSEADDR 选项
-    int optval = 1;
+    int optval = 1; // TIME_WAIT的端口也能够被重用监听，如果我们用domain-socket，纯粹本机通信，就不会涉及这个TIME-WAIT了
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
         perror("setsockopt failed");
         close(server_fd);
@@ -55,15 +55,19 @@ int main()
     int server_fd, conn_fd;
     make_conn(&server_fd, &conn_fd);
 
+    struct header hdr = {0};
+    read(conn_fd, &hdr, sizeof(hdr));
+    log("recv header: header type %u, len %u", hdr.type, hdr.length);
+
     char buffer[BUFFER_SIZE] = {0};
     const char *response = "Hello from server";
     // Read data from client
-    read(conn_fd, buffer, BUFFER_SIZE);
-    log("recv client req: %s", buffer);
+    read(conn_fd, buffer, hdr.length);
+    log("recv body: %s", buffer);
 
     // Send response to client
     send(conn_fd, response, strlen(response), 0);
-    log("response sent");
+    log("response sent ok!");
 
     // Clean up
     close(conn_fd);

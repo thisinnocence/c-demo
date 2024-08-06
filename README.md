@@ -1,2 +1,3 @@
-# c-demo
+# C Demo
+
 Little C demo.

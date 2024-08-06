@@ -1,31 +1,17 @@
-# auto-gen by chat-gpt
-#
-# `bear make` can generate compile_commands.json
-# is used for clangd-lsp for vim/vscode
-
-
-CC = gcc
-
-CFLAGS = -Wall -Wextra -g -I../util
-LDFLAGS = -lrt
+# `bear make` can generate compile_commands.json for clangd
 
 TARGETS = server.out client.out
 
-all: $(TARGETS)
+CFLAGS = -MMD -MP -Wall -Wextra -g -I../util
+LDFLAGS = -lrt
 
-SRCS = server.c client.c
+SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)
-
 -include $(DEPS)
 
-%.o: %.c %.d
-	$(CC) $(CFLAGS) -c $< -o $@
-
-%.d: %.c
-	@set -e; \
-	$(CC) $(CFLAGS) -MM $< | \
-	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
+.PHONY: all
+all: $(TARGETS)
 
 # Build server executable
 server.out: server.o
@@ -35,7 +21,6 @@ server.out: server.o
 client.out: client.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
+.PHONY: clean
 clean:
 	rm -f $(OBJS) $(TARGETS) $(DEPS)
-
-.PHONY: all clean

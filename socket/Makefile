@@ -2,6 +2,10 @@
 
 TARGETS = server.out client.out
 
+# Note: 这个顺序不能放在 -include $(DEPS) 之后，会导致server.c更新不触发增量编译
+.PHONY: all
+all: $(TARGETS)
+
 CFLAGS = -MMD -MP -Wall -Wextra -g -I../util
 LDFLAGS = -lrt
 
@@ -9,9 +13,6 @@ SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 -include $(DEPS)
-
-.PHONY: all
-all: $(TARGETS)
 
 # Build server executable
 server.out: server.o

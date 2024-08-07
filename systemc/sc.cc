@@ -55,4 +55,18 @@ SystemC默认用的是协程，在OS视角看是其实是单thread，所以遇�
 [23:45:39.491301][sc.cc:13] thread1: Current simulation time: 4 s
 [23:45:39.491341][sc.cc:25] thread2: Current simulation time: 4 s
 
+// GDB 看thread model，可以确认就只有1个thread
+Breakpoint 1, SimpleModule::thread1 (this=0x7fffffffdb00) at sc.cc:18
+18                      log("end: unistd sleep 2 seconds");
+(gdb) bt
+#0  SimpleModule::thread1 (this=0x7fffffffdb00) at sc.cc:18
+#1  0x00007ffff7eac79f in sc_core::sc_process_b::semantics (this=0x55555556eba0) at ../../../src/sysc/kernel/sc_process.h:633
+#2  sc_core::sc_thread_cor_fn (arg=0x55555556eba0) at ../../../src/sysc/kernel/sc_thread_process.cpp:117
+#3  0x00007ffff7f68c2b in qt_blocki () at qtmds.s:71
+(gdb) info threads
+  Id   Target Id             Frame
+* 1    process 1460 "sc.out" SimpleModule::thread1 (this=0x7fffffffdb00) at sc.cc:18
+||
+可以看出，只有1个OS thread，调用站回溯到 qtcmds --- 就是QuickThreads库使用汇编维护的协程栈,
+在网上不是那种函数调用栈帧回溯的方法的寻找方式了，所以就找到这里，没有到main程序去
 */

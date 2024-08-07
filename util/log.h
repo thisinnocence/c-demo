@@ -1,3 +1,6 @@
+#ifndef __LOG_H__
+#define __LOG_H__
+
 #include <stdio.h>
 #include <sys/time.h>
 #include <time.h>
@@ -30,12 +33,4 @@ static inline void log_time()
     } \
 } while (0)
 
-// 保存原始 perror 函数的指针
-static void (*orig_perror)(const char *) = perror;
-
-// 重新定义 perror 宏
-#define perror(msg) \
-    do { \
-        fprintf(stderr, "[%s:%d]", __FILE__, __LINE__); \
-        orig_perror(msg); \
-    } while (0)
+#endif

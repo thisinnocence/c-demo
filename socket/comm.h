@@ -29,4 +29,14 @@ PACKED_STRUCT(header) {
     uint16_t length;
 };
 
+// 保存原始 perror 函数的指针
+static void (*orig_perror)(const char *) = perror;
+
+// 重新定义 perror 宏
+#define perror(msg) \
+    do { \
+        fprintf(stderr, "[%s:%d]", __FILE__, __LINE__); \
+        orig_perror(msg); \
+    } while (0)
+
 #endif

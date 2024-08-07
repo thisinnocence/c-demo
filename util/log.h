@@ -25,7 +25,7 @@ static inline void log_time()
 #define log(fmt, ...) do { \
     if (LOG_SWITCH) { \
         log_time(); \
-        printf("[%s:%d]" fmt "\n", \
+        printf("[%s:%d] " fmt "\n", \
                 __FILE__, __LINE__, ##__VA_ARGS__); \
     } \
 } while (0)

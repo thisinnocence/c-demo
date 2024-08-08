@@ -16,6 +16,7 @@ SC_MODULE(SimpleModule) {
                 log("begin: unistd sleep 2 seconds");
                 sleep(2);
                 log("end: unistd sleep 2 seconds");
+                //for(;;){usleep(10);}
             }
         }
     }
@@ -35,8 +36,11 @@ int sc_main(int argc, char* argv[]) {
 }
 
 /*
-SystemC默认用的是协程，在OS视角看是其实是单thread，所以遇到OS函数调用带来的OS线程的阻塞，
-会阻塞真个协程调度器，即所有的协程
+1. SystemC默认用的是协程，在OS视角看是其实是单thread，所以遇到OS函数调用带来的OS线程的阻塞，
+会阻塞真个协程调度器，即所有的协程。
+
+2. 同样，SystemC是非抢占式的调度，如果一个SC_THREAD陷入了 deadloop，那么所有的SC_THREAD都会
+得不到调度了。
 
 运行的打印如下：
         SystemC 3.0.0-Accellera --- Aug  7 2024 23:00:37

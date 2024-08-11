@@ -1,28 +1,27 @@
-TARGETS = sc.out event.out async_event.out
+SRCS    = $(wildcard *.cc)
+TARGETS = $(SRCS:.cc=.out)
 
 .PHONY: all
 all: $(TARGETS)
 
-SYSTEMC_HOME = /root/github/systemc
-INC_DIRS = ../util $(SYSTEMC_HOME)/include $(SYSTEMC_HOME)/examples/sysc/async_suspend
+SYSTEMC_HOME = ../../systemc
+
+INC_DIRS  = ../util
+INC_DIRS += $(SYSTEMC_HOME)/include
+INC_DIRS += $(SYSTEMC_HOME)/examples/sysc/async_suspend
+
 INC_FLAGS = $(addprefix -I, $(INC_DIRS))
+CXXFLAGS  = $(INC_FLAGS) -MMD -MP -std=c++17 -Wall -g
 
-CXXFLAGS = $(INC_FLAGS) -MMD -MP -std=c++17 -Wall -g
-LDFLAGS = -L$(SYSTEMC_HOME)/lib-linux64 -lsystemc -Wl,-rpath,$(SYSTEMC_HOME)/lib-linux64 \
-			-lpthread
+LDFLAGS  = -L$(SYSTEMC_HOME)/lib-linux64 -lsystemc
+LDFLAGS += -Wl,-rpath,$(SYSTEMC_HOME)/lib-linux64
+LDFLAGS += -lpthread
 
-SRCS = $(wildcard *.cc)
-OBJS = $(SRCS:.cc=.o)
-DEPS = $(SRCS:.cc=.d)
+OBJS    = $(SRCS:.cc=.o)
+DEPS    = $(SRCS:.cc=.d)
 -include $(DEPS)
 
-sc.out: sc.o
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-
-event.out: event.o
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-
-async_event.out: async_event.o
+%.out: %.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean

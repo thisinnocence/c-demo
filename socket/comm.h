@@ -20,19 +20,17 @@ enum msg_type {
     Server,
 };
 
-// 定义单字节对齐的宏
-#define PACKED_STRUCT(name) \
+/* 定义单字节对齐的宏 */
+#define PACKED(name) \
     struct __attribute__((packed, aligned(1))) name
 
-PACKED_STRUCT(header) {
+PACKED(header) {
     uint16_t type;
     uint16_t length;
 };
 
-// 保存原始 perror 函数的指针
+/* 给库函数加一个同名的wrapper */
 static void (*orig_perror)(const char *) = perror;
-
-// 重新定义 perror 宏
 #define perror(msg) \
     do { \
         fprintf(stderr, "[%s:%d]", __FILE__, __LINE__); \

@@ -5,27 +5,28 @@ int make_conn()
     int fd = 0, ret = 0;
     struct sockaddr_in serv_addr;
 
-    // Create socket fd
-    /* SOCK_STREAM: Sequenced, reliable, connection-based byte streams.  */
-    // 这个表示有序可靠基于连接，可以用TCP，也可以是本机内部的domain-socket
+    /* Create socket fd:
+       SOCK_STREAM: Sequenced, reliable, connection-based byte streams.
+       这个表示有序可靠基于连接，协议可以用TCP，也可以是本机domain-socket. */
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Socket creation error");
         return -1;
     }
 
-    // Configure server address
-    // 这个是表示协议类型，IP协议栈而且是stream, 基本就是TCP了
-    serv_addr.sin_family = AF_INET;   // AF_INET == PF_INET == 2 /* IP protocol family.  */
+    /* Configure server address:
+       这个是表示协议类型，IP协议栈而且是stream, 基本就是TCP了.
+       AF_INET == PF_INET == 2 , means IP protocol family. */
+    serv_addr.sin_family = AF_INET;   
     serv_addr.sin_port = htons(PORT);
 
-    // Convert IPv4 and IPv6 addresses from text to binary form
+    /* Convert IPv4 and IPv6 addresses from text to binary form */
     if (inet_pton(AF_INET, CONN_IP, &serv_addr.sin_addr) <= 0) {
         perror("Invalid address / Address not supported");
         close(fd);
         return -1;
     }
 
-    // Connect to server
+    /* Connect to server */
 CONN:
     ret = connect(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     if (ret < 0) {
@@ -77,7 +78,6 @@ int main()
     msg_send(fd);
     msg_recv(fd);
 
-    // Clean up
     close(fd);
     return 0;
 }

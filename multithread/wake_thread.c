@@ -20,7 +20,7 @@ void *thread1_func(void *arg) {
         printf("thread1: will wait on cond\n");
         pthread_cond_wait(&cond, &mutex);
     }
-    printf("Thread 1: Data is ready, shared_data = %d\n", shared_data);
+    printf("Thread1: Data is ready, shared_data = %d\n", shared_data);
     pthread_mutex_unlock(&mutex);
     return NULL;
 }
@@ -30,9 +30,10 @@ void *thread2_func(void *arg) {
     sleep(1);  // 模拟一些计算或工作
     pthread_mutex_lock(&mutex);
     shared_data = 42;  // 更新共享数据
-    printf("Thread 2: Data updated to %d\n", shared_data);
+    printf("Thread2: Data updated to %d\n", shared_data);
     // 通知等待中的线程
     pthread_cond_signal(&cond);
+    printf("Thread2: pthread_cond_signal over.\n");
     pthread_mutex_unlock(&mutex);
     return NULL;
 }
@@ -59,3 +60,10 @@ int main() {
     return 0;
 }
 
+/** run output:
+thread1: get mutex lock
+thread1: will wait on cond
+Thread2: Data updated to 42
+Thread2: pthread_cond_signal over.
+Thread1: Data is ready, shared_data = 42
+*/

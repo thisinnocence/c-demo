@@ -7,7 +7,7 @@ TARGETS = server.out client.out
 all: $(TARGETS)
 
 CFLAGS = -MMD -MP -Wall -Wextra -g -I../util
-LDFLAGS = -lrt
+LDFLAGS = -lrt -lpthread
 
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)

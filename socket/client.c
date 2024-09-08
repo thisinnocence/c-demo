@@ -1,4 +1,11 @@
 #include "comm.h"
+#include <pthread.h>
+
+int fd;
+
+int shared_data = 0;
+pthread_mutex_t mutex;
+pthread_cond_t cond;
 
 int make_conn()
 {
@@ -57,6 +64,17 @@ void msg_send(int fd)
     log("send body: %s", message);
     // send(fd, message, strlen(message), 0);
     write(fd, message, strlen(message));
+
+    // 加互斥锁
+    pthread_mutex_lock(&mutex);
+    log("thread: get mutex lock");
+	// 这里 while 是为了避免OS虚假唤醒对应thread
+    while (shared_data == 0) { // 收到报文修改这个数据
+        // 等待条件变量被触发
+		// 会阻塞在cond，同时释放mutex互斥锁
+        log("send ok, now wait on pthread_cond");
+        pthread_cond_wait(&cond, &mutex); // 等在锁和条件变量
+    }
 }
 
 void msg_recv(int fd)
@@ -65,20 +83,43 @@ void msg_recv(int fd)
     // recv(fd, buffer, BUFFER_SIZE, 0);
     read(fd, buffer, BUFFER_SIZE);
     log("recv finish, Server: %s", buffer);
+
+    // 加互斥锁
+    pthread_mutex_lock(&mutex);
+    shared_data = 42;  // 更新共享数据
+    log("msg_recv, Data updated to %d", shared_data);
+    // 通知等待中的线程
+    pthread_cond_signal(&cond);
+    log("pkt-thread: pthread_cond_signal over.");
+    // 释放互斥锁
+    pthread_mutex_unlock(&mutex);
+}
+
+void *pkt_thread(void *arg)
+{
+    log("start pkt_thread, arg(%p)", arg);
+    msg_recv(fd);
+    return NULL;
 }
 
 int main()
 {
-    int fd = make_conn();
+    fd = make_conn();
     if (fd < 0) {
         log("connect error!");
         exit(1);
     }
 
+    pthread_t thread;
+    pthread_create(&thread, NULL, pkt_thread, NULL);
+
+    // when send, we just wait on pthread_cond
+    log("msg_send call start");
     msg_send(fd);
-    msg_recv(fd);
+    log("msg_send call over, recv msg already.");
 
     close(fd);
+    pthread_join(thread, NULL); // this should be at the end of main func
     return 0;
 }
 

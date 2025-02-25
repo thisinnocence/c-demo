@@ -36,22 +36,24 @@ typedef union
  */
 sem_t semaphore;
 
-void* thread_func(void* arg) {
+void *thread_func(void *arg)
+{
     long id = (long)arg;
-    sem_wait(&semaphore); // 等待信号量
+    sem_wait(&semaphore);  // 等待信号量
     printf("Thread[%ld] is running\n", id);
     sleep(1);
-    sem_post(&semaphore); // 释放信号量
+    sem_post(&semaphore);  // 释放信号量
     printf("Thread[%ld] finish\n", id);
     return NULL;
 }
 
-int main() {
+int main()
+{
     pthread_t threads[5];
     sem_init(&semaphore, 0, 2);  // 初始化信号量，初始值为 2，线程共享
 
     for (long i = 0; i < 5; i++) {
-        pthread_create(&threads[i], NULL, thread_func, (void*)i);
+        pthread_create(&threads[i], NULL, thread_func, (void *)i);
     }
 
     for (int i = 0; i < 5; i++) {

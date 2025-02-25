@@ -1,5 +1,5 @@
 SRCS = $(wildcard *.c)
-TARGETS = $(SOURCES:.cc=.out)
+TARGETS = $(SRCS:.c=.out)
 
 .PHONY: all
 all: $(TARGETS)

@@ -58,7 +58,7 @@ PenaltyBreakBeforeFirstCallParameter: 100  # 增加函数调用首参数换行�
 AlignTrailingComments: true     # 行尾注释自动对齐
 SpacesBeforeTrailingComments: 2 # 行尾注释前保留 2 空格（// 前空两格）
 ReflowComments: true            # 自动重排多行注释
-ColumnLimit: 0                  # 注释行宽限制（0 不限制宽度）
+ColumnLimit: 100                # 注释行宽限制（0 不限制宽度）
 
 # ==============================================
 # 头文件与命名空间

@@ -54,3 +54,7 @@ dkms.conf
 # ignore lsp tmp file
 compile_commands.json
 .cache/
+
+# some project file
+ipc_file
+
